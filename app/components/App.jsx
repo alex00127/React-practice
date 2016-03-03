@@ -1,75 +1,44 @@
-import React from 'react';
-import uuid from 'node-uuid';
-import Notes from './Notes.jsx';
 
+import AltContainer from 'alt-container';
+import React from 'react';
+
+import Lanes from './Lanes.jsx';
+import LaneActions from '../actions/LaneActions';
+import LaneStore from '../stores/LaneStore';
+
+
+import {DragDropContext} from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
+
+
+@DragDropContext(HTML5Backend)
 export default class App extends React.Component {
-	constructor(props){
-		super(props);
-		this.state = {
-	    notes: [
-	  	  {
-		  		id:uuid.v4(),
-		  		task: 'Learn Webpack'
-	  	  },
-	  	  {
-		  		id:uuid.v4(),
-		  		task: 'Learn React'
-	  	  },
-	  	  {
-		  		id:uuid.v4(),
-		  		task: 'Do larudry'
-	  	  }
-	  	]
-		};
-	}
+
   render() {
-  	const notes = this.state.notes;
 
     return (
       <div>
-        <button className="add-note" onClick={this.addNote}>+</button>
+        <button className="add-lane" onClick={this.addLane}>+</button>
+        <AltContainer
+          stores={[LaneStore]}
+          inject={{
+            lanes: () => LaneStore.getState().lanes || []
+          }}
+        >
+          <Lanes />
 
-        <Notes notes={notes}
-          onEdit={this.editNote}
-          onDelete={this.deleteNote} />
+        </AltContainer>
+
       </div>
 
     );
   }
 
-  deleteNote = (id, e) => {
-    // Avoid bubbling to edit
-    e.stopPropagation();
 
-    this.setState({
-      notes: this.state.notes.filter(note => note.id !== id)
-    });
-  };
 
-  addNote = () => {
-    this.setState({
-      notes: this.state.notes.concat([{
-        id: uuid.v4(),
-        task: 'New task'
-      }])
-    });
-  };
+  addLane() {
+    LaneActions.create({name: 'New lane'});
+  }
 
-  editNote = (id, task) => {
-    // Don't modify if trying set an empty value
-    if(!task.trim()) {
-      return;
-    }
-
-    const notes = this.state.notes.map(note => {
-      if(note.id === id && task) {
-        note.task = task;
-      }
-
-      return note;
-    });
-
-    this.setState({notes});
-  };
-  
 }
