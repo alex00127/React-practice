@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack",
+    "deploy": "gh-pages -d build",
     "start": "webpack-dev-server"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {},
+  "devDependencies": {
+    "gh-pages": "^0.11.0"
+  },
   "dependencies": {
     "alt": "^0.18.2",
     "alt-container": "^1.0.2",
